@@ -125,6 +125,24 @@ namespace BandR
                 return ms.ToArray();
             }
         }
+        public static void ReadFullyChunked(Stream input,String file)
+        {
+            var buffer = new byte[4096];
+            using (FileStream ms = new FileStream(file,FileMode.Create))
+            {
+                while (true)
+                {
+                    var read = input.Read(buffer, 0, buffer.Length);
+
+                    if (read == 0)
+                        break;
+
+                    ms.Write(buffer, 0, read);
+                }
+               
+            }
+            
+        }
 
         /// <summary>
         /// </summary>

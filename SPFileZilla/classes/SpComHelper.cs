@@ -801,7 +801,7 @@ namespace BandR
             string spSiteDomain,
             bool isSpOnline,
             string fileServerRelUrl, 
-            out byte[] fileData, 
+            out System.IO.Stream fileData, 
             out string msg)
         {
             msg = "";
@@ -824,13 +824,15 @@ namespace BandR
                     }
 
                     var fi = File.OpenBinaryDirect(ctx, fileServerRelUrl);
-                    fileData = GenUtil.ReadFully(fi.Stream);
+                    fileData = fi.Stream;
+                  //  GenUtil.ReadFully();
                 }
 
             }
             catch (Exception ex)
             {
                 msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                Console.WriteLine(msg);
             }
 
             return msg == "";

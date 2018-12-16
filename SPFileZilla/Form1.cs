@@ -1831,7 +1831,7 @@ namespace SPFileZilla2013
             var lstArgs = e.Argument as List<object>;
             var spFilePath = (string)lstArgs[0];
             var msg = "";
-            byte[] fileData = null;
+            System.IO.Stream fileData = null;
 
             if (!SpComHelper.DownloadFileFromSharePoint(tbQuickSPSiteUrl.Text.Trim(), tbQuickSPUsername.Text.Trim(), tbQuickSPPassword.Text.Trim(),
                     tbQuickSPDomain.Text.Trim(), cbIsSharePointOnline.Checked, spFilePath, out fileData, out msg))
@@ -1843,11 +1843,11 @@ namespace SPFileZilla2013
             var str = "";
             if (System.Configuration.ConfigurationManager.AppSettings["editorTextEncodingIsASCII"] == "1")
             {
-                str = Encoding.ASCII.GetString(fileData, 0, fileData.Length);
+               // str = Encoding.ASCII.GetString(fileData, 0, fileData.Length);
             }
             else
             {
-                str = Encoding.UTF8.GetString(fileData, 0, fileData.Length);
+             //   str = Encoding.UTF8.GetString(fileData, 0, fileData.Length);
             }
 
             e.Result = new List<object>()
@@ -2874,8 +2874,11 @@ namespace SPFileZilla2013
 
             try
             {
-                // create directory in filesystem
-                Directory.CreateDirectory(newFolderPath);
+                if (!Directory.Exists(newFolderPath))
+                {
+                    // create directory in filesystem
+                    Directory.CreateDirectory(newFolderPath);
+                }
             }
             catch (Exception ex)
             {
@@ -2930,7 +2933,7 @@ namespace SPFileZilla2013
         public void AddFileToFS(string spFilePath, string fsFolderPath, ref bool refreshNeeded)
         {
             var msg = "";
-            byte[] fileData = null;
+            System.IO.Stream fileData = null;
 
             var fileName = spFilePath.Substring(spFilePath.LastIndexOf('/') + 1);
 
@@ -2940,8 +2943,14 @@ namespace SPFileZilla2013
                 return;
             }
 
-            if (!SpComHelper.DownloadFileFromSharePoint(tbQuickSPSiteUrl.Text.Trim(), tbQuickSPUsername.Text.Trim(), tbQuickSPPassword.Text.Trim(),
-               tbQuickSPDomain.Text.Trim(), cbIsSharePointOnline.Checked, spFilePath, out fileData, out msg))
+            if (!SpComHelper.DownloadFileFromSharePoint(tbQuickSPSiteUrl.Text.Trim(), 
+                tbQuickSPUsername.Text.Trim(),
+                tbQuickSPPassword.Text.Trim(),
+               tbQuickSPDomain.Text.Trim(),
+               cbIsSharePointOnline.Checked, 
+               spFilePath, 
+               out fileData,
+               out msg))
             {
                 bgWorker.ReportProgress(0, msg);
                 return;
@@ -2950,8 +2959,23 @@ namespace SPFileZilla2013
             try
             {
                 // Creates a new file, writes the specified byte array to the file, and then closes the file. If the target file already exists, it is overwritten.
-                File.WriteAllBytes(GenUtil.CombineFileSysPaths(fsFolderPath, fileName), fileData);
+                GenUtil.ReadFullyChunked(fileData, GenUtil.CombineFileSysPaths(fsFolderPath, fileName));
+              //  File.WriteAllBytes(, fileData);
+              
                 bgWorker.ReportProgress(0, "File Copied Successfully: " + spFilePath);
+
+                if(!SpComHelper.DeleteFileFromSharePoint(tbQuickSPSiteUrl.Text.Trim(),
+                    tbQuickSPUsername.Text.Trim(),
+                    tbQuickSPPassword.Text.Trim(),
+                   tbQuickSPDomain.Text.Trim(),
+                   cbIsSharePointOnline.Checked,
+                   spFilePath,
+                   out msg))
+                {
+                    //we could not delete the file 
+                    bgWorker.ReportProgress(0, msg);
+                    Console.WriteLine("could not delete file:" + msg);
+                }
                 refreshNeeded = true;
             }
             catch (Exception ex)
