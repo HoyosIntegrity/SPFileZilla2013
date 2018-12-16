@@ -39,7 +39,15 @@ namespace BandR
 
             return o;
         }
-
+        static ClientContext ctx = null;
+        static private void Login(string siteurl)
+        {
+            if( ctx == null)
+            {
+                ctx = authenticationManager.GetWebLoginClientContext(siteurl, null) ;
+            }
+        }
+        static OfficeDevPnP.Core.AuthenticationManager authenticationManager = new OfficeDevPnP.Core.AuthenticationManager();
         /// <summary>
         /// </summary>
         public static bool GetSiteLists(
@@ -56,10 +64,14 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+
+
+
+                
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
-
+                    
                     if (!isSpOnline)
                     {
                         ctx.Credentials = new NetworkCredential(spSiteUsername, spSitePwd, spSiteDomain);
@@ -67,9 +79,12 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                       // //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
-
+                    /*Web web = context.Web;
+                    User user = web.CurrentUser;
+                    context.Load(web);
+                    context.Load(user);*/
                     var lists = ctx.Web.Lists;
                     ctx.Load(lists, l => l.Include(x => x.Title, x => x.Id, x => x.ContentTypes.Include(y => y.Name, y => y.Id)));
 
@@ -131,7 +146,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -142,7 +157,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var list = ctx.Web.Lists.GetById(listId.Value);
@@ -270,7 +285,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -281,7 +296,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                   //     //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var list = ctx.Web.Lists.GetById(listId.Value);
@@ -403,7 +418,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -414,7 +429,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                      //  //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var list = ctx.Web.Lists.GetById(listId.Value);
@@ -497,7 +512,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -508,7 +523,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var folder = ctx.Web.GetFolderByServerRelativeUrl(folderUrl);
@@ -588,7 +603,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -599,7 +614,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                   //     //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var fileName = filePath.Substring(filePath.LastIndexOf('\\') + 1);
@@ -684,7 +699,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -695,7 +710,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                       // //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     using (var ms = new System.IO.MemoryStream(fileData))
@@ -748,7 +763,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -759,7 +774,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                 //       //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var folder = ctx.Web.GetFolderByServerRelativeUrl(parentFolderUrl);
@@ -794,7 +809,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -805,7 +820,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                  //      //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var fi = File.OpenBinaryDirect(ctx, fileServerRelUrl);
@@ -836,7 +851,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -847,7 +862,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                     //   //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -880,7 +895,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -891,7 +906,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                    //    //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var folder = ctx.Web.GetFolderByServerRelativeUrl(folderServerRelUrl);
@@ -925,7 +940,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -936,7 +951,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+             //           //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -975,7 +990,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -986,7 +1001,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+         //               //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var oldFolderParentUrl = folderServerRelUrl.Substring(0, folderServerRelUrl.LastIndexOf('/'));
@@ -1057,7 +1072,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1068,7 +1083,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -1112,7 +1127,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1123,7 +1138,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -1163,7 +1178,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1174,7 +1189,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     File file = null;
@@ -1229,7 +1244,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1240,7 +1255,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     File file = null;
@@ -1293,7 +1308,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1304,7 +1319,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     Folder folder = ctx.Web.GetFolderByServerRelativeUrl(folderPath);
@@ -1347,7 +1362,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1358,7 +1373,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -1397,7 +1412,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1408,7 +1423,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -1445,7 +1460,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1456,7 +1471,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -1493,7 +1508,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1504,7 +1519,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var file = ctx.Web.GetFileByServerRelativeUrl(fileServerRelUrl);
@@ -1541,7 +1556,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1552,7 +1567,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var web = ctx.Web;
@@ -1592,7 +1607,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1603,7 +1618,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var web = ctx.Web;
@@ -1642,7 +1657,7 @@ namespace BandR
 
             try
             {
-                using (var ctx = new ClientContext(spSiteUrl))
+                Login(spSiteUrl);
                 {
                     ctx.RequestTimeout = 1000000;
 
@@ -1653,7 +1668,7 @@ namespace BandR
                     }
                     else
                     {
-                        ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
+                        //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
 
                     var web = ctx.Web;
