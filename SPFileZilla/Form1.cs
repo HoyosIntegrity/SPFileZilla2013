@@ -33,8 +33,8 @@ namespace SPFileZilla2013
 
         public int GetRowLimit()
         {
-            var rl = GenUtil.SafeToNum(System.Configuration.ConfigurationManager.AppSettings["rowLimit"]);
-            return rl > 0 ? rl : 100;
+            long rl = GenUtil.SafeToNum(System.Configuration.ConfigurationManager.AppSettings["rowLimit"]);
+            return (int) (rl > 0 ? rl : 100);
         }
 
         public static string GetContentTypeIdPrefix()
@@ -2861,7 +2861,10 @@ namespace SPFileZilla2013
 
         /// <summary>
         /// </summary>
-        public void AddFolderToFS(string spFolderPath, string fsFolderPath, bool skipFolderSearch, ref bool refreshNeeded)
+        public void AddFolderToFS(string spFolderPath,
+            string fsFolderPath,
+            bool skipFolderSearch,
+            ref bool refreshNeeded)
         {
             // create folder in filesystem
             var msg = "";
@@ -2914,6 +2917,22 @@ namespace SPFileZilla2013
                 bgWorker.ReportProgress(0, msg);
                 return;
             }
+            if(lstObjs.Count == 0)
+            {
+                //we dont want empty folders on our server
+                /*if(! SpComHelper.DeleteFolderFromSharePoint(tbQuickSPSiteUrl.Text.Trim(),
+                     tbQuickSPUsername.Text.Trim(),
+                     tbQuickSPPassword.Text.Trim(),
+                     tbQuickSPDomain.Text.Trim(),
+                     cbIsSharePointOnline.Checked,
+                     spFolderPath,
+                     out msg))
+                 {
+                     //had issue deleting the empty folder from the server
+                 }*/
+                bgWorker.ReportProgress(0, "found empty folder on server:"+spFolderPath);
+                return;
+            }
 
             foreach (var obj in lstObjs)
             {
@@ -2926,6 +2945,15 @@ namespace SPFileZilla2013
                     AddFileToFS(obj.url, newFolderPath, ref refreshNeeded);
                 }
             }
+            //we where created using right click - new folder.. dont delete our source folder!
+            if(!skipFolderSearch)
+            {
+                //TODO: add new bool to indicate if we are copying or moving. 
+                //RIGHT now we dont know if this was a sendtodest or a copy/move operation
+               // SpComHelper.DeleteFolderFromSharePoint()
+                //we should delete the folder here if we got no failures of the childrens aboves
+            }
+
         }
 
         /// <summary>

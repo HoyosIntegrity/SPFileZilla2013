@@ -19,7 +19,7 @@ namespace BandR.CustObjs
         public string url { get; set; }
         public string name { get; set; }
 
-        public int? length { get; set; }
+        public long? length { get; set; }
         public DateTime? dtModified { get; set; }
 
         // special

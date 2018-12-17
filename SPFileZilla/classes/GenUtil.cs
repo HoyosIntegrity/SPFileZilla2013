@@ -304,14 +304,14 @@ namespace BandR
         /// <summary>
         /// If not valid returns -1.
         /// </summary>
-        public static int SafeToNum(object o)
+        public static long SafeToNum(object o)
         {
             if (IsNull(o))
                 return -1;
             else
             {
                 if (IsInt(o))
-                    return int.Parse(o.ToString());
+                    return long.Parse(o.ToString());
                 else
                     return -1;
             }

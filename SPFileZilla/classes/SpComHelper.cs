@@ -115,7 +115,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg =(SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -255,7 +255,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = rootFolderPath +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -347,7 +347,7 @@ namespace BandR
                                 if (!modified.HasValue && created.HasValue)
                                     modified = created;
 
-                                var filesize = (int?)GenUtil.SafeToNum(SafeGetFileSize(item));
+                                var filesize = (long?)GenUtil.SafeToNum(SafeGetFileSize(item));
                                 if (filesize == -1) filesize = null;
 
                                 lstObjs.Add(new CustObjs.SPTree_FolderFileObj()
@@ -390,7 +390,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = folderServerRelPath +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -486,7 +486,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = folderServerRelPath +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -576,7 +576,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = folderUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -677,7 +677,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = spFolderUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -741,7 +741,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = spFileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -786,7 +786,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = folderName +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -822,7 +822,7 @@ namespace BandR
                     {
                   //      //ctx.Credentials = new SharePointOnlineCredentials(spSiteUsername, GenUtil.ToSecureString(spSitePwd));
                     }
-
+                    
                     var fi = File.OpenBinaryDirect(ctx, fileServerRelUrl);
                     fileData = fi.Stream;
                   //  GenUtil.ReadFully();
@@ -831,7 +831,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
                 Console.WriteLine(msg);
             }
 
@@ -876,7 +876,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                msg = fileServerRelUrl + (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -920,7 +920,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                msg = folderServerRelUrl + (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -969,7 +969,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                msg = fileServerRelUrl + (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1051,7 +1051,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = folderServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1105,7 +1105,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1157,7 +1157,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1223,7 +1223,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1288,7 +1288,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1340,7 +1340,7 @@ namespace BandR
                 if (!ex.Message.Equals("File Not Found."))
                 {
                     // some other error
-                    msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                      msg = folderPath +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
                 }
             }
 
@@ -1390,7 +1390,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1440,7 +1440,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1488,7 +1488,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1536,7 +1536,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = fileServerRelUrl +  (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1586,7 +1586,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1637,7 +1637,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg =   (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
@@ -1682,7 +1682,7 @@ namespace BandR
             }
             catch (Exception ex)
             {
-                msg = SHOW_FULL_ERRORS ? ex.ToString() : ex.Message;
+                  msg = (SHOW_FULL_ERRORS ? ex.ToString() : ex.Message);
             }
 
             return msg == "";
