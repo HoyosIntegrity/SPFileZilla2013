@@ -3662,6 +3662,118 @@ namespace SPFileZilla2013
             formManagePropBag.Show();
             formManagePropBag.Focus();
         }
+        public void bgWorker_DoWork_DeleteEmptySp(object sender, DoWorkEventArgs e)
+        {
+            var lstArgs = e.Argument as List<object>;
+            var selFSItems = lstArgs[0] as List<string>;
+            var refreshNeeded = false;
 
+            foreach (string fsItem in selFSItems)
+            {
+                var folderPath = fsItem.Substring(0, 1);
+
+                if (folderPath == Enums.TreeNodeTypes.FOLDER.ToString())
+                {
+                    AddFolderToSP(fsItem.Substring(1), curSPLocationObj.curFolderUrl, false, ref refreshNeeded);
+                }
+                else if (folderPath == Enums.TreeNodeTypes.FILE.ToString())
+                {
+                    AddFileToSP(fsItem.Substring(1), curSPLocationObj.curFolderUrl, ref refreshNeeded);
+                }
+            }
+
+            e.Result = new List<object>()
+                {
+                    refreshNeeded,
+                };
+        }
+        public void DeleteSPEmptyFolder(string spFolderPath,
+           string fsFolderPath,
+           bool skipFolderSearch,
+           ref bool refreshNeeded)
+        {
+            // create folder in filesystem
+            var msg = "";
+
+            // get folder name that should be created
+            var folderName = spFolderPath.Substring(spFolderPath.LastIndexOf('/') + 1);
+
+            // build new filesystem folder path
+            var newFolderPath = GenUtil.CombineFileSysPaths(fsFolderPath, folderName);
+            // get files and folders inside this folder
+            var lstObjs = new List<SPTree_FolderFileObj>();
+
+            if (!SpComHelper.GetListFoldersFilesFolderLevel(
+                    tbQuickSPSiteUrl.Text.Trim(),
+                    tbQuickSPUsername.Text.Trim(),
+                    tbQuickSPPassword.Text.Trim(),
+                    tbQuickSPDomain.Text.Trim(),
+                    cbIsSharePointOnline.Checked,
+                    curSPLocationObj.listId,
+                    spFolderPath,
+                    0,
+                    GetRowLimit(),
+                    out lstObjs,
+                    out msg))
+            {
+                bgWorker.ReportProgress(0, msg);
+                return;
+            }
+            if (lstObjs.Count == 0)
+            {
+                //we dont want empty folders on our server
+                if(! SpComHelper.DeleteFolderFromSharePoint(tbQuickSPSiteUrl.Text.Trim(),
+                     tbQuickSPUsername.Text.Trim(),
+                     tbQuickSPPassword.Text.Trim(),
+                     tbQuickSPDomain.Text.Trim(),
+                     cbIsSharePointOnline.Checked,
+                     spFolderPath,
+                     out msg))
+                 {
+                    //had issue deleting the empty folder from the server
+                    bgWorker.ReportProgress(0, msg);
+                    return;
+                }
+                bgWorker.ReportProgress(0, "found empty folder on server:" + spFolderPath);
+                return;
+            }
+
+            foreach (var obj in lstObjs)
+            {
+                if (obj.treeNodeType == Enums.TreeNodeTypes.FOLDER)
+                {
+                    DeleteSPEmptyFolder(obj.url, newFolderPath, false, ref refreshNeeded);
+                }
+            }
+        }
+            private void deleteEmpty_Click(object sender, EventArgs e)
+        {
+            if (curSPLocationObj.listId == null)
+            {
+                cout("Please open a SharePoint Library.");
+                return;
+            }
+            var selSPItems = GetListViewSelItemsText(lvSP);
+
+            if (!selSPItems.Any())
+            {
+                cout("Please select one or more files/folders from the file system view.");
+                return;
+            }
+
+            cout("Deleting empty sharepoint subdirs...");
+
+            DisableFormFields();
+
+            bgWorker = new BackgroundWorker();
+            bgWorker.DoWork += new DoWorkEventHandler(bgWorker_DoWork_DeleteEmptySp);
+            bgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorker_RunWorkerCompleted_CopyToSp);
+            bgWorker.ProgressChanged += new ProgressChangedEventHandler(bgWorker_All_ProgressChanged);
+            bgWorker.WorkerReportsProgress = true;
+            bgWorker.RunWorkerAsync(new List<object>()
+            {
+                selSPItems
+            });
+        }
     }
 }
